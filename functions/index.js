@@ -5,7 +5,8 @@ const axios = require("axios");
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 //
-// schedule("0 11 * * *")
+// schedule("0 8 * * *")
+// schedule("every 5 minutes")
 admin.initializeApp();
 
 exports.autoNotification =
@@ -37,46 +38,63 @@ exports.autoNotification =
                         root.child("userInfo").once("value").then((snap) => {
                           if (snap.hasChildren()) {
                             snap.forEach((child)=> {
+                              let body="Music by";
+                              let totalCount=0;
+                              let willSend = false;
                               for (let i =0; i<albums.items.length; i++) {
                                 const item=albums.items[i];
                                 const releaseDate =
                                 new Date(item["release_date"].toString());
-                                console.log("releaseDate "+releaseDate);
                                 const today = new Date();
                                 const diffTime = Math.abs(today - releaseDate);
                                 const diffDays =
-                                Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                console.log(diffDays);
-                                if (diffDays<=1) {
+                                    Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                if (diffDays<=4) {
                                   const followed=child.child("followedArtists");
                                   if (followed.hasChildren()) {
                                     const artists=item["artists"];
                                     followed.forEach((followedArtists)=> {
                                       const followedId= followedArtists.val();
-                                      console.log(followedId);
                                       for (let j=0; j<artists.length; j++) {
                                         if (followedId === artists[j].id) {
                                           // eslint-disable-next-line max-len
-                                          const titleT=`New Music/Album Released from ${artists[j].name}`;
-                                          const payload = {
-                                            data: {
-                                              title: titleT,
-                                              body: item.name,
-                                              albumId: item.id,
-                                            },
-                                          };
-                                          const token= child
-                                              .child("notificationToken").val();
-                                          admin.messaging()
-                                              .sendToDevice(token, payload);
+                                          willSend=true;
+                                          totalCount++;
+                                          if (totalCount<=2) {
+                                            body=body+" "+artists[j].name+",";
+                                          }
                                         }
                                       }
                                     });
                                   }
                                 }
                               }
+                              if (willSend) {
+                                const titleT = "New Music Released Today";
+                                totalCount = totalCount - 2;
+                                if (totalCount>0) {
+                                  body = body + " and " + totalCount + " More";
+                                }
+                                const payload = {
+                                  data: {
+                                    title: titleT,
+                                    body: body,
+                                  },
+                                };
+                                const token = child
+                                    .child("notificationToken").val();
+                                admin.messaging()
+                                    .sendToDevice(token, payload);
+                                console
+                                    .log("noti sent" +
+                                          token);
+                                console
+                                    .log("noti sent" +
+                                          body);
+                              }
                             });
                           }
+                          resolve("200");
                         });
                       });
                   console.log(result.data.access_token);
