@@ -49,7 +49,7 @@ exports.autoNotification =
                                 const diffTime = Math.abs(today - releaseDate);
                                 const diffDays =
                                     Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                                if (diffDays<=4) {
+                                if (diffDays<=1) {
                                   const followed=child.child("followedArtists");
                                   if (followed.hasChildren()) {
                                     const artists=item["artists"];
@@ -61,7 +61,11 @@ exports.autoNotification =
                                           willSend=true;
                                           totalCount++;
                                           if (totalCount<=2) {
-                                            body=body+" "+artists[j].name+",";
+                                            if (totalCount===1) {
+                                              body=body+" "+artists[j].name+",";
+                                            } else {
+                                              body=body+" "+artists[j].name;
+                                            }
                                           }
                                         }
                                       }
