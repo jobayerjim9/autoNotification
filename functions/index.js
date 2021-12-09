@@ -92,16 +92,12 @@ exports.autoNotification =
                                 console
                                     .log("noti sent" +
                                           token);
-                                console
-                                    .log("noti sent" +
-                                          body);
                               }
                             });
                           }
                           resolve("200");
                         });
                       });
-                  console.log(result.data.access_token);
                 })
                 .catch((err) => {
                   console.log(err.data);
