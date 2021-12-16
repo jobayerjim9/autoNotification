@@ -32,21 +32,23 @@ const processData =
                   const diffDays =
                             // eslint-disable-next-line max-len
                             Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                  if (diffDays <= 1) {
+                  if (diffDays <= 1 && diffDays>=0) {
                     const artists = item["artists"];
                     for (let j = 0; j < artists.length; j++) {
                       if (followedId === artists[j].id) {
                         // eslint-disable-next-line max-len
                         willSend = true;
-                        totalCount++;
-                        if (totalCount <= 2) {
-                          if (totalCount === 1) {
-                            body = body + " " + artists[j].name + ",";
-                          } else {
-                            body = body + " " + artists[j].name;
+                        if (!body.includes(artists[j].name)) {
+                          totalCount++;
+                          if (totalCount <= 2) {
+                            if (totalCount === 1) {
+                              body = body + " " + artists[j].name + ",";
+                            } else {
+                              body = body + " " + artists[j].name;
+                            }
                           }
+                          console.log("artistName " + body);
                         }
-                        console.log("artistName "+body);
                       }
                     }
                   }
