@@ -23,34 +23,34 @@ const processData =
               .then((response) => {
                   let artistAlreadyFound = false;
                   const items = response.data["items"];
-                for (let i = 0; i < items.length; i++) {
-                  const item = items[i];
-                  const releaseDate =
-                            // eslint-disable-next-line max-len
-                            new Date(item["release_date"].toString());
-                  const today = new Date();
-                  const diffTime =
-                            Math.abs(today - releaseDate);
-                    const diffDays =
-                        // eslint-disable-next-line max-len
-                        Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                    const artists = item["artists"];
+                  for (let i = 0; i < items.length; i++) {
+                      const item = items[i];
+                      const releaseDate =
+                          // eslint-disable-next-line max-len
+                          new Date(item["release_date"].toString());
+                      const today = new Date();
+                      const diffTime =
+                          Math.abs(today - releaseDate);
+                      const diffDays =
+                          // eslint-disable-next-line max-len
+                          Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                      const artists = item["artists"];
                   if (diffDays <= 1 && diffDays>=0) {
                     for (let j = 0; j < artists.length; j++) {
                       if (followedId === artists[j].id) {
-                        // eslint-disable-next-line max-len
+                          // eslint-disable-next-line max-len
                           willSend = true;
                           artistAlreadyFound = true;
-                        if (!body.includes(artists[j].name)) {
-                          totalCount++;
-                          if (totalCount <= 2) {
-                              if (totalCount === 1) {
-                                  body = body + " " + artists[j].name + ",";
-                              } else {
-                                  body = body + " " + artists[j].name;
+                          if (!body.includes(artists[j].name)) {
+                              totalCount++;
+                              if (totalCount <= 2) {
+                                  if (totalCount === 1) {
+                                      body = body + " " + artists[j].name + ",";
+                                  } else {
+                                      body = body + " " + artists[j].name;
+                                  }
                               }
-                          }
-                            console.log("artistName " + body);
+                              console.log("artistName " + body);
                         }
                       }
                     }
@@ -61,7 +61,7 @@ const processData =
                           }
                       }
                   }
-                }
+                  }
                   if (!artistAlreadyFound) {
                       const fUrl = "https://api.spotify.com/v1/artists/" + followedId + "/albums?limit=50&include_groups=appears_on";
                       axios.get(fUrl, header)
@@ -164,14 +164,14 @@ const processData =
               body: body,
             },
           };
-          admin.messaging()
-              .sendToDevice(token, payload);
-          console
-              .log("noti sent" +
-                      token);
-          console.log("payload " + body);
+            admin.messaging()
+                .sendToDevice(token, payload);
+            console
+                .log("noti sent" +
+                    token);
+            console.log("payload " + body);
         }
-        console.log("outside "+position+" "+userPosition);
+          console.log("outside " + position + " " + userPosition);
           if (userPosition >= users.length) {
               resolve("200");
           } else {
@@ -223,15 +223,15 @@ exports.autoNotification =
         const basicToken = "Basic OWJlYjRiZDI4MDQ4NGRhZDkxODYzZDE5NDFkZGQ3OTg6OGZjODc0ODQ1MDk1NGE3ZmIxYWUyZTI5OWQzMTI0NTE=";
         const config = {
             headers: {
-              "Content-Type": "application/x-www-form-urlencoded",
-              "Authorization": basicToken,
+                "Content-Type": "application/x-www-form-urlencoded",
+                "Authorization": basicToken,
             },
-          };
-          return new Promise((resolve, reject) => {
+        };
+        return new Promise((resolve, reject) => {
             axios.post("https://accounts.spotify.com/api/token", params, config)
                 .then((result) => {
-                  const accessToken= "Bearer "+result.data.access_token;
-                  header = {
+                    const accessToken = "Bearer " + result.data.access_token;
+                    header = {
                     headers: {
                       "Authorization": accessToken,
                     },
